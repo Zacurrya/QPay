@@ -17,7 +17,7 @@ import com.example.qr_payments.config.SupabaseAuthProperties;
 import com.example.qr_payments.dto.AuthResponse;
 import com.example.qr_payments.model.Account;
 import com.example.qr_payments.model.AccountType;
-import com.example.qr_payments.model.Status;
+import com.example.qr_payments.model.AccountStatus;
 import com.example.qr_payments.repository.AccountRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,7 +83,7 @@ public class SupabaseAuthService {
         account.setAccountType(accountType != null ? accountType : AccountType.CONSUMER);
         account.setCurrency(currency != null && !currency.trim().isEmpty() ? currency : "USD");
         account.setBalance(initialBalance != null ? initialBalance : BigDecimal.ZERO);
-        account.setStatus(Status.ACTIVE);
+        account.setStatus(AccountStatus.ACTIVE);
 
         Account saved = accountRepository.save(account);
 

@@ -13,7 +13,9 @@ import com.example.qr_payments.repository.LedgerEntryRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -21,9 +23,22 @@ public class PaymentService {
     private final AccountRepository accountRepository;
     private final LedgerEntryRepository ledgerEntryRepository;
     private final CurrencyService currencyService;
+    private final IdempotencyService idempotencyService;
 
     @Transactional
-    public void processPayment(UUID debtorId, UUID creditorId, BigDecimal amount, String currency, String reference) {
+    public boolean processPayment(
+            UUID debtorId,
+            UUID creditorId,
+            BigDecimal amount,
+            String currency,
+            String reference,
+            String idempotencyKey) {
+
+        if (idempotencyKey != null && !idempotencyKey.isBlank()
+                && !idempotencyService.isFirstRequest(idempotencyKey)) {
+            log.info("Duplicate payment request skipped for idempotency key: {}", idempotencyKey);
+            return false;
+        }
 
         // Prevent self-payment
         if (debtorId.equals(creditorId)) {
@@ -76,5 +91,7 @@ public class PaymentService {
 
         ledgerEntryRepository.save(debitEntry);
         ledgerEntryRepository.save(creditEntry);
+
+        return true;
     }
 }

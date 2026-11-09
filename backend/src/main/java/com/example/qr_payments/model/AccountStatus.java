@@ -1,6 +1,6 @@
 package com.example.qr_payments.model;
 
-public enum Status {
+public enum AccountStatus {
     ACTIVE,
     FROZEN,
     CLOSED

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.qr_payments.dto.AccountResponse;
 import com.example.qr_payments.model.Account;
 import com.example.qr_payments.model.AccountType;
-import com.example.qr_payments.model.Status;
+import com.example.qr_payments.model.AccountStatus;
 import com.example.qr_payments.repository.AccountRepository;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class AccountService {
         account.setAccountType(type);
         account.setCurrency(currency.toUpperCase()); // Standardise currency codes
         account.setBalance(BigDecimal.ZERO); 
-        account.setStatus(Status.ACTIVE);
+        account.setStatus(AccountStatus.ACTIVE);
         
         // Save to Supabase
         Account savedAccount = accountRepository.save(account);
